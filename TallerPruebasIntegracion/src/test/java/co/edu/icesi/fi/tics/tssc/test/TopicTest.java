@@ -13,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import co.edu.icesi.fi.tics.tssc.exceptions.CapacityException;
+import co.edu.icesi.fi.tics.tssc.exceptions.SpringException;
+import co.edu.icesi.fi.tics.tssc.exceptions.TopicException;
 import co.edu.icesi.fi.tics.tssc.model.TsscTopic;
 import co.edu.icesi.fi.tics.tssc.repositories.ITopicRepository;
 import co.edu.icesi.fi.tics.tssc.services.TopicService;
@@ -35,20 +38,21 @@ class TopicTest {
 		MockitoAnnotations.initMocks(this);
 	}   
 	
+	//Se encarga de verificar si lanza la excepcion al tener un topic con Spring menor o igual a cero.
 	@Test
 	public void testSpringException() {
 		TsscTopic topic = new TsscTopic();
 		topic.setDefaultSprints(0);
-	    topic.setDefaultGroups(0);
+	    topic.setDefaultGroups(3);
 		
-		assertThrows(RuntimeException.class, () -> {			
+		assertThrows(SpringException.class, () -> {			
 			topicService.saveTopic(topic);			
 		});
 		
 	}
 	
 	
-	
+	//Se encarga de testear si un topic guarda correctamente con Spring.
 	@Test
 	public void testSpringNotException() {
 		TsscTopic topic = new TsscTopic();
@@ -56,24 +60,31 @@ class TopicTest {
 		topic.setDefaultGroups(2);
 	
 		when(topicRepository.save(topic)).thenReturn(topic);
-		assertTrue(topicService.saveTopic(topic).equals(topic));
+		try {
+			assertTrue(topicService.saveTopic(topic).equals(topic));
+		} catch (CapacityException | TopicException | SpringException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
 		verify(topicRepository, times(1)).save(topic);
 		
 	}
 	
+	//Se encarga de verificar si lanza la excepcion al tener un topic con Groups  menor o igual a cero.
 	@Test
 	public void testGroupsException() {
 		TsscTopic topic = new TsscTopic();
-		topic.setDefaultGroups(0);
-		topic.setDefaultSprints(-1);
+		topic.setDefaultGroups(-2);
+		topic.setDefaultSprints(3);
 	
 		
-		assertThrows(RuntimeException.class, () -> {			
+		assertThrows(CapacityException.class, () -> {			
 			topicService.saveTopic(topic);			
 		});
 		
 	}
 	
+	//Se encarga de testear si un topic guarda correctamente con Group.
 	@Test
 	public void testGroupsNotException() {
 		TsscTopic topic = new TsscTopic();
@@ -81,9 +92,15 @@ class TopicTest {
 		topic.setDefaultSprints(2);
 		
 		when(topicRepository.save(topic)).thenReturn(topic);
-		assertTrue(topicService.saveTopic(topic).equals(topic));
+		try {
+			assertTrue(topicService.saveTopic(topic).equals(topic));
+		} catch (CapacityException | TopicException | SpringException e) {
+			// TODO Auto-generated catch block
+			fail();
+		}
 		verify(topicRepository, times(1)).save(topic);
 	}
+	
 	
 	
 	
