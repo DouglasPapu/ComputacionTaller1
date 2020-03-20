@@ -1,8 +1,10 @@
 package co.edu.icesi.fi.tics.tssc.exceptions;
 
-public class TopicException extends Exception{
+import java.util.NoSuchElementException;
+
+public class TopicException extends NoSuchElementException{
 
 	public TopicException() {
-		super("Topic es nulo");
+		super("Topic es nulo o inexistente en la database");
 	}
 }

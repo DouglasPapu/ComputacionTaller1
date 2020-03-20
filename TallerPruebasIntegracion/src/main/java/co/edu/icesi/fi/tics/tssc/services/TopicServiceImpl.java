@@ -1,6 +1,10 @@
 package co.edu.icesi.fi.tics.tssc.services;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Service;
 
 import co.edu.icesi.fi.tics.tssc.exceptions.CapacityException;
 import co.edu.icesi.fi.tics.tssc.exceptions.SpringException;
@@ -8,6 +12,8 @@ import co.edu.icesi.fi.tics.tssc.exceptions.TopicException;
 import co.edu.icesi.fi.tics.tssc.model.TsscTopic;
 import co.edu.icesi.fi.tics.tssc.repositories.ITopicRepository;
 
+//@EnableJpaRepositories("co.edu.icesi.fi.tics.tssc.repositories")
+@Service
 public class TopicServiceImpl implements TopicService{
 
 	public ITopicRepository repository;
@@ -33,17 +39,25 @@ public class TopicServiceImpl implements TopicService{
 			
 			throw new SpringException();
 			
-		}else {
-			
-			repository.save(nuevo);
+		}else {		
+			return repository.save(nuevo);
+
 		}
-			return nuevo;     
+			    
 	}
 
 	@Override
-	public TsscTopic editTopic(TsscTopic editado) {
-		// TODO Auto-generated method stub
-		return null;
+	public TsscTopic editTopic(TsscTopic editado) throws TopicException{
+		
+		if(editado == null) {
+			throw new TopicException();
+		}else if(repository.findById(editado.getId()).get() == null) {
+				 throw new NoSuchElementException();
+		}else {			
+			return repository.save(editado);
+		}
+				
 	}
+	
 
 }
