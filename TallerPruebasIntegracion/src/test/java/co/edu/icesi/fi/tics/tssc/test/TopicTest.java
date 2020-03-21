@@ -62,6 +62,8 @@ class TopicTest {
 		assertThrows(SpringException.class, () -> {
 			topicService.saveTopic(topic);
 		});
+		
+		Mockito.verifyNoInteractions(topicRepository);
 	}
 
 	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
@@ -76,6 +78,8 @@ class TopicTest {
 		assertThrows(SpringException.class, () -> {
 			topicService.saveTopic(topic);
 		});
+		
+		Mockito.verifyNoInteractions(topicRepository);
 	}
 
 	// Se encarga de testear si un topic guarda correctamente con Sprints correctos.
@@ -109,6 +113,8 @@ class TopicTest {
 		assertThrows(CapacityException.class, () -> {
 			topicService.saveTopic(topic);
 		});
+		
+		Mockito.verifyNoInteractions(topicRepository);
 
 	}
 
@@ -124,6 +130,8 @@ class TopicTest {
 		assertThrows(CapacityException.class, () -> {
 			topicService.saveTopic(topic);
 		});
+		
+		Mockito.verifyNoInteractions(topicRepository);
 
 	}
 
@@ -159,9 +167,12 @@ class TopicTest {
 		topic2.setDefaultGroups(5);
 		topic2.setDefaultSprints(10);
 
-		assertThrows(NoSuchElementException.class, () -> {
+		Mockito.when(topicRepository.findById(Mockito.anyLong())).thenReturn(null);
+		assertThrows(TopicException.class, () -> {
 			topicService.editTopic(topic2);
 		});
+		
+		Mockito.verify(topicRepository, times(1)).findById(Mockito.anyLong());
 	}
 
 	// Verifica si el método lanza la excepcion cuando se intenta
@@ -172,6 +183,8 @@ class TopicTest {
 		assertThrows(TopicException.class, () -> {
 			topicService.editTopic(null);
 		});
+		
+		Mockito.verifyNoInteractions(topicRepository);
 
 	}
 

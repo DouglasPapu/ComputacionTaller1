@@ -51,8 +51,8 @@ public class TopicServiceImpl implements TopicService{
 		
 		if(editado == null) {
 			throw new TopicException();
-		}else if(repository.findById(editado.getId()).get() == null) {
-				 throw new NoSuchElementException();
+		}else if(repository.findById(editado.getId()) == null) {
+				 throw new TopicException();
 		}else {			
 			return repository.save(editado);
 		}

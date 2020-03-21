@@ -117,7 +117,7 @@ class GameTest {
 	}
 	
 	
-	//Se encarga de testear que cuando se guarde un juego nulo, lace la excepción.
+	//Se encarga de testear que cuando se guarde un juego nulo, lance la excepción.
 	@DisplayName("Guardar Juego nulo")
 	@Test
 	public void testSaveGameNull() {	
@@ -168,6 +168,7 @@ class GameTest {
 		Mockito.verifyNoInteractions(gameRepository);
 	}
 
+	// Se encarga de testear el guardar un juego con un tema existente.
 	@DisplayName("Guardar Juego con Tema")
 	@Test
 	public void testSaveGameConTema() {
