@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,7 +32,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.testng.annotations.BeforeTest;
 
-
 @RunWith(MockitoJUnitRunner.class)
 class TopicTest {
 
@@ -50,10 +50,11 @@ class TopicTest {
 	// PRUEBAS PARA EL GUARDAR
 	// *********************************************
 
-	// Se encarga de verificar si lanza la excepcion al tener un topic con Spring
-	// menor o igual a cero.
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
+	// igual a cero.
+	@DisplayName("Sprints Igual A Cero")
 	@Test
-	public void testSpringException() {
+	public void testSprintsExceptionIgualACero() {
 		TsscTopic topic = new TsscTopic();
 		topic.setDefaultSprints(0);
 		topic.setDefaultGroups(3);
@@ -63,9 +64,24 @@ class TopicTest {
 		});
 	}
 
-	// Se encarga de testear si un topic guarda correctamente con Spring.
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
+	// menor a cero.
+	@DisplayName("Sprints Menor A Cero")
 	@Test
-	public void testSpringNotException() {
+	public void testSprintsExceptionMenorACero() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(-1);
+		topic.setDefaultGroups(3);
+
+		assertThrows(SpringException.class, () -> {
+			topicService.saveTopic(topic);
+		});
+	}
+
+	// Se encarga de testear si un topic guarda correctamente con Sprints correctos.
+	@DisplayName("Topic Guardado Sprints")
+	@Test
+	public void testSprintsNotException() {
 		TsscTopic topic = new TsscTopic();
 		topic.setDefaultSprints(1);
 		topic.setDefaultGroups(2);
@@ -82,11 +98,12 @@ class TopicTest {
 	}
 
 	// Se encarga de verificar si lanza la excepcion al tener un topic con Groups
-	// menor o igual a cero.
+	// igual a cero.
+	@DisplayName("Groups Igual A Cero")
 	@Test
-	public void testGroupsException() {
+	public void testGroupsExceptionIgualACero() {
 		TsscTopic topic = new TsscTopic();
-		topic.setDefaultGroups(-2);
+		topic.setDefaultGroups(0);
 		topic.setDefaultSprints(3);
 
 		assertThrows(CapacityException.class, () -> {
@@ -95,7 +112,23 @@ class TopicTest {
 
 	}
 
-	// Se encarga de testear si un topic guarda correctamente con Group.
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Groups
+	// Menor a cero.
+	@DisplayName("Groups Menor A Cero")
+	@Test
+	public void testGroupsExceptionMenorACero() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultGroups(-6);
+		topic.setDefaultSprints(3);
+
+		assertThrows(CapacityException.class, () -> {
+			topicService.saveTopic(topic);
+		});
+
+	}
+
+	// Se encarga de testear si un topic guarda correctamente con Group correctos.
+	@DisplayName("Topic Guardado Group")
 	@Test
 	public void testGroupsNotException() {
 		TsscTopic topic = new TsscTopic();
@@ -118,6 +151,7 @@ class TopicTest {
 
 	// Verifica si el método lanza la excepcion cuando se intenta actualizar un
 	// topic inexistente en la database.
+	@DisplayName("Editar Topic Inexistente")
 	@Test
 	public void testEditTopicException() {
 
@@ -132,6 +166,7 @@ class TopicTest {
 
 	// Verifica si el método lanza la excepcion cuando se intenta
 	// actualizar un topic nulo.
+	@DisplayName("Editar Topic null")
 	@Test
 	public void testEditTopicExceptionNull() {
 		assertThrows(TopicException.class, () -> {
@@ -142,24 +177,24 @@ class TopicTest {
 
 	// Verifica si el método edita de manera correcta cuando se intenta actualizar
 	// un topic existente en la database.
-
+    @DisplayName("Editar Topic Correcto")
 	@Test
 	public void testEditTopicNotException() {
 
 		try {
 
-			//Por el cual voy a editar.
+			// Por el cual voy a editar.
 			TsscTopic topic2 = new TsscTopic();
 			topic2.setDefaultGroups(35);
 			topic2.setDefaultSprints(50);
 
 			Optional<TsscTopic> list = Optional.of(topic2);
-			
-			Mockito.when(topicRepository.save(topic2)).thenReturn(topic2);
+
+			Mockito.when(topicRepository.save(Mockito.any())).thenReturn(topic2);
 			Mockito.when(topicRepository.findById(topic2.getId())).thenReturn(list);
-			
+
 			assertTrue(topicService.editTopic(topic2).equals(topic2));
-			
+
 			verify(topicRepository, times(1)).save(topic2);
 
 		} catch (TopicException e) {
@@ -167,6 +202,5 @@ class TopicTest {
 		}
 
 	}
-
 
 }
