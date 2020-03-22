@@ -32,8 +32,8 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public TsscStory saveStory(TsscStory nuevo, long id) throws StoryException, GameException,
-	      BusinessValueException, InitialSprintException, PriorityException{
+	public TsscStory saveStory(TsscStory nuevo, long id)
+			throws StoryException, GameException, BusinessValueException, InitialSprintException, PriorityException {
 		// TODO Auto-generated method stub
 		if (nuevo == null) {
 			throw new StoryException();
@@ -59,13 +59,15 @@ public class StoryServiceImpl implements StoryService {
 	}
 
 	@Override
-	public TsscStory editStory(TsscStory editado) throws StoryException{
+	public TsscStory editStory(TsscStory editado) throws StoryException {
 		if (editado == null) {
 			throw new StoryException();
 		} else if (storyRepository.findById(editado.getId()) == null) {
 			throw new StoryException();
 		} else {
+
 			return storyRepository.save(editado);
+
 		}
 	}
 

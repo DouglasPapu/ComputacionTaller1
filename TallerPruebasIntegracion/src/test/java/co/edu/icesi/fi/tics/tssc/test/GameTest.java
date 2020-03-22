@@ -62,7 +62,7 @@ class GameTest {
 		assertThrows(SpringException.class, () -> {
 			gameService.saveGame(game);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
 	}
 
@@ -78,7 +78,7 @@ class GameTest {
 		assertThrows(SpringException.class, () -> {
 			gameService.saveGame(game);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
 	}
 
@@ -94,7 +94,7 @@ class GameTest {
 		assertThrows(CapacityException.class, () -> {
 			gameService.saveGame(game);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
 
 	}
@@ -111,22 +111,21 @@ class GameTest {
 		assertThrows(CapacityException.class, () -> {
 			gameService.saveGame(game);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
 
 	}
-	
-	
-	//Se encarga de testear que cuando se guarde un juego nulo, lance la excepción.
+
+	// Se encarga de testear que cuando se guarde un juego nulo, lance la excepción.
 	@DisplayName("Guardar Juego nulo")
 	@Test
-	public void testSaveGameNull() {	
-		assertThrows(GameException.class, ()->{	
+	public void testSaveGameNull() {
+		assertThrows(GameException.class, () -> {
 			gameService.saveGame(null);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
-		
+
 	}
 
 	// Se encarga de testear si un game guarda correctamente sin temas, pero con
@@ -198,14 +197,13 @@ class GameTest {
 	public void testEditGameException() {
 
 		TsscGame game = new TsscGame();
-		
+
 		Mockito.when(gameRepository.findById(Mockito.anyLong())).thenReturn(null);
-		
+
 		assertThrows(GameException.class, () -> {
 			gameService.editGame(game);
 		});
-		
-		
+
 	}
 
 	// Verifica si el método lanza la excepcion cuando se intenta
@@ -216,7 +214,7 @@ class GameTest {
 		assertThrows(GameException.class, () -> {
 			gameService.editGame(null);
 		});
-		
+
 		Mockito.verifyNoInteractions(gameRepository);
 
 	}
@@ -239,7 +237,12 @@ class GameTest {
 			Mockito.when(gameRepository.save(Mockito.any())).thenReturn(game);
 			Mockito.when(gameRepository.findById(game.getId())).thenReturn(list);
 
-			assertTrue(gameService.editGame(game).equals(game));
+			try {
+				assertTrue(gameService.editGame(game).equals(game));
+			} catch (CapacityException | SpringException e) {
+				// TODO Auto-generated catch block
+				fail();
+			}
 
 			verify(gameRepository, times(1)).save(game);
 
@@ -247,6 +250,38 @@ class GameTest {
 			fail();
 		}
 
+	}
+
+	// Se encarga de que lance excepcion cuando se edite un game con
+	// groups con errores de guardado.
+
+	@DisplayName("Editar juego sin atributos correctos. (Groups)")
+	@Test
+	public void testEditGameError() {
+
+		TsscGame game = new TsscGame();
+		when(gameRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new TsscGame()));
+		game.setNGroups(-20);
+
+		assertThrows(CapacityException.class, () -> {
+			gameService.editGame(game);
+		});
+	}
+
+	// Se encarga de que lance excepcion cuando se edite un game con
+	// sprints con errores de guardado.
+
+	@DisplayName("Editar juego sin atributos correctos. (Sprints)")
+	@Test
+	public void testEditGameError2() {
+
+		TsscGame game = new TsscGame();
+		when(gameRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new TsscGame()));
+		game.setNSprints(-20);
+
+		assertThrows(SpringException.class, () -> {
+			gameService.editGame(game);
+		});
 	}
 
 }

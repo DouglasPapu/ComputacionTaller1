@@ -112,7 +112,7 @@ class StoryTest {
 		assertThrows(PriorityException.class, () -> {
 			storyService.saveStory(story, id);
 		});
-		
+
 		Mockito.verifyNoInteractions(storyRepository);
 	}
 
@@ -122,7 +122,7 @@ class StoryTest {
 	@Test
 	public void testValorNegocioMenorACero() {
 		TsscStory story = new TsscStory();
-		story.setBusinessValue(new BigDecimal(-5));
+		story.setBusinessValue(new BigDecimal(-1));
 		story.setInitialSprint(new BigDecimal(10));
 		story.setPriority(new BigDecimal(40));
 
@@ -143,7 +143,7 @@ class StoryTest {
 	public void testSprintInitialMenorACero() {
 		TsscStory story = new TsscStory();
 		story.setBusinessValue(new BigDecimal(47));
-		story.setInitialSprint(new BigDecimal(-40));
+		story.setInitialSprint(new BigDecimal(-1));
 		story.setPriority(new BigDecimal(40));
 
 		long id = 0;
@@ -165,7 +165,7 @@ class StoryTest {
 		TsscStory story = new TsscStory();
 		story.setBusinessValue(new BigDecimal(47));
 		story.setInitialSprint(new BigDecimal(50));
-		story.setPriority(new BigDecimal(-27));
+		story.setPriority(new BigDecimal(-1));
 
 		long id = 0;
 		Mockito.when(gameRepository.findById(id)).thenReturn(Optional.of(new TsscGame()));
@@ -228,12 +228,12 @@ class StoryTest {
 
 		try {
 			assertTrue(storyService.saveStory(story, id).equals(story));
-		} catch (StoryException | GameException | BusinessValueException | InitialSprintException
+		} catch (StoryException | GameException | BusinessValueException |  InitialSprintException
 				| PriorityException e) {
 			// TODO Auto-generated catch block
 			fail();
 		}
-		
+
 		Mockito.verify(storyRepository, times(1)).save(story);
 	}
 

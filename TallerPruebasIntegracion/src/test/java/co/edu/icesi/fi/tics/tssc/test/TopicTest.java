@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import co.edu.icesi.fi.tics.tssc.exceptions.CapacityException;
 import co.edu.icesi.fi.tics.tssc.exceptions.SpringException;
 import co.edu.icesi.fi.tics.tssc.exceptions.TopicException;
+import co.edu.icesi.fi.tics.tssc.model.TsscGame;
 import co.edu.icesi.fi.tics.tssc.model.TsscTopic;
 import co.edu.icesi.fi.tics.tssc.repositories.ITopicRepository;
 import co.edu.icesi.fi.tics.tssc.services.TopicService;
@@ -50,6 +51,18 @@ class TopicTest {
 	// PRUEBAS PARA EL GUARDAR
 	// *********************************************
 
+	// Se encarga de verificar que lance la excepcion cuando se quiera
+	// guardar un topic nulo.
+	@DisplayName("Topic null")
+	@Test
+	public void testTopicNull() {
+		assertThrows(TopicException.class, () -> {
+			topicService.saveTopic(null);
+		});
+
+		Mockito.verifyNoInteractions(topicRepository);
+	}
+
 	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
 	// igual a cero.
 	@DisplayName("Sprints Igual A Cero")
@@ -62,7 +75,7 @@ class TopicTest {
 		assertThrows(SpringException.class, () -> {
 			topicService.saveTopic(topic);
 		});
-		
+
 		Mockito.verifyNoInteractions(topicRepository);
 	}
 
@@ -78,7 +91,7 @@ class TopicTest {
 		assertThrows(SpringException.class, () -> {
 			topicService.saveTopic(topic);
 		});
-		
+
 		Mockito.verifyNoInteractions(topicRepository);
 	}
 
@@ -113,7 +126,7 @@ class TopicTest {
 		assertThrows(CapacityException.class, () -> {
 			topicService.saveTopic(topic);
 		});
-		
+
 		Mockito.verifyNoInteractions(topicRepository);
 
 	}
@@ -130,7 +143,7 @@ class TopicTest {
 		assertThrows(CapacityException.class, () -> {
 			topicService.saveTopic(topic);
 		});
-		
+
 		Mockito.verifyNoInteractions(topicRepository);
 
 	}
@@ -171,7 +184,7 @@ class TopicTest {
 		assertThrows(TopicException.class, () -> {
 			topicService.editTopic(topic2);
 		});
-		
+
 		Mockito.verify(topicRepository, times(1)).findById(Mockito.anyLong());
 	}
 
@@ -183,14 +196,14 @@ class TopicTest {
 		assertThrows(TopicException.class, () -> {
 			topicService.editTopic(null);
 		});
-		
+
 		Mockito.verifyNoInteractions(topicRepository);
 
 	}
 
 	// Verifica si el método edita de manera correcta cuando se intenta actualizar
 	// un topic existente en la database.
-    @DisplayName("Editar Topic Correcto")
+	@DisplayName("Editar Topic Correcto")
 	@Test
 	public void testEditTopicNotException() {
 
@@ -206,7 +219,12 @@ class TopicTest {
 			Mockito.when(topicRepository.save(Mockito.any())).thenReturn(topic2);
 			Mockito.when(topicRepository.findById(topic2.getId())).thenReturn(list);
 
-			assertTrue(topicService.editTopic(topic2).equals(topic2));
+			try {
+				assertTrue(topicService.editTopic(topic2).equals(topic2));
+			} catch (CapacityException | SpringException e) {
+				// TODO Auto-generated catch block
+				fail();
+			}
 
 			verify(topicRepository, times(1)).save(topic2);
 
@@ -214,6 +232,39 @@ class TopicTest {
 			fail();
 		}
 
+	}
+
+	// Se encarga de que lance excepcion cuando se edite un topic con
+	// groups con errores de guardado.
+
+	@DisplayName("Editar Topic sin atributos correctos. (Groups)")
+	@Test
+	public void testEditGameError() {
+
+		TsscTopic topic = new TsscTopic();
+		when(topicRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new TsscTopic()));
+		topic.setDefaultGroups(-20);
+
+		assertThrows(CapacityException.class, () -> {
+			topicService.editTopic(topic);
+		});
+	}
+
+	// Se encarga de que lance excepcion cuando se edite un topic con
+	// sprints con errores de guardado.
+
+	@DisplayName("Editar Topic sin atributos correctos. (Sprints)")
+	@Test
+	public void testEditGameError2() {
+
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultGroups(1);
+		when(topicRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new TsscTopic()));
+		topic.setDefaultSprints(-20);
+
+		assertThrows(SpringException.class, () -> {
+			topicService.editTopic(topic);
+		});
 	}
 
 }

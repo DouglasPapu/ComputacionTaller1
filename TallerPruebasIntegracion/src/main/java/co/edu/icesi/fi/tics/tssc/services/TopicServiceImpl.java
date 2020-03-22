@@ -14,50 +14,56 @@ import co.edu.icesi.fi.tics.tssc.repositories.ITopicRepository;
 
 //@EnableJpaRepositories("co.edu.icesi.fi.tics.tssc.repositories")
 @Service
-public class TopicServiceImpl implements TopicService{
+public class TopicServiceImpl implements TopicService {
 
 	public ITopicRepository repository;
-	
+
 	@Autowired
 	public TopicServiceImpl(ITopicRepository repository) {
 		this.repository = repository;
-		
-	}
-	
-	
-	@Override
-	public TsscTopic saveTopic(TsscTopic nuevo) 
-			 throws CapacityException, TopicException, SpringException {
 
-		if(nuevo == null) {
+	}
+
+	@Override
+	public TsscTopic saveTopic(TsscTopic nuevo) throws CapacityException, TopicException, SpringException {
+
+		if (nuevo == null) {
 			throw new TopicException();
-		}else if (nuevo.getDefaultGroups() <= 0) {
-			
+		} else if (nuevo.getDefaultGroups() <= 0) {
+
 			throw new CapacityException();
-			
-		}else if(nuevo.getDefaultSprints() <= 0) {
-			
+
+		} else if (nuevo.getDefaultSprints() <= 0) {
+
 			throw new SpringException();
-			
-		}else {		
+
+		} else {
 			return repository.save(nuevo);
 
 		}
-			    
+
 	}
 
 	@Override
-	public TsscTopic editTopic(TsscTopic editado) throws TopicException{
-		
-		if(editado == null) {
+	public TsscTopic editTopic(TsscTopic editado) throws TopicException, CapacityException, SpringException {
+
+		if (editado == null) {
 			throw new TopicException();
-		}else if(repository.findById(editado.getId()) == null) {
-				 throw new TopicException();
-		}else {			
+		} else if (repository.findById(editado.getId()) == null) {
+			throw new TopicException();
+		} else if (editado.getDefaultGroups() <= 0) {
+
+			throw new CapacityException();
+
+		} else if (editado.getDefaultSprints() <= 0) {
+
+			throw new SpringException();
+
+		} else {
 			return repository.save(editado);
+
 		}
-				
+
 	}
-	
 
 }

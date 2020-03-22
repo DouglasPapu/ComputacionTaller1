@@ -65,11 +65,15 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public TsscGame editGame(TsscGame editado) throws GameException {
+	public TsscGame editGame(TsscGame editado) throws GameException, CapacityException, SpringException {
 		if (editado == null) {
 			throw new GameException();
 		} else if (gameRepository.findById(editado.getId()) == null) {
 			throw new GameException();
+		 } else if (editado.getNGroups() <= 0) {
+			throw new CapacityException();
+		} else if (editado.getNSprints() <= 0) {
+			throw new SpringException();
 		} else {
 			return gameRepository.save(editado);
 		}
