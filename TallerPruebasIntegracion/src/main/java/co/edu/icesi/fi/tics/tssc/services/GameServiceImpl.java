@@ -37,7 +37,8 @@ public class GameServiceImpl implements GameService {
 
 		if (nuevo == null) {
 			throw new GameException();
-		} else if (topicRepository.findById(id) == null) {
+			
+		} else if (topicRepository.findById(id).isPresent() == false) {
 			throw new TopicException();
 		} else if (nuevo.getNGroups() <= 0) {
 			throw new CapacityException();

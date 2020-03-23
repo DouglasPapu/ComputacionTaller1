@@ -49,8 +49,11 @@ public class TopicServiceImpl implements TopicService {
 
 		if (editado == null) {
 			throw new TopicException();
-		} else if (repository.findById(editado.getId()) == null) {
+			
+		} else if (repository.findById(editado.getId()).isPresent() == false) {
+			
 			throw new TopicException();
+			
 		} else if (editado.getDefaultGroups() <= 0) {
 
 			throw new CapacityException();

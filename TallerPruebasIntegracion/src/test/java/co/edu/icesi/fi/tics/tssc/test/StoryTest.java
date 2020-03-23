@@ -185,7 +185,7 @@ class StoryTest {
 		long id = 2;
 		TsscStory story = new TsscStory();
 
-		when(gameRepository.findById(id)).thenReturn(null);
+		when(gameRepository.findById(id)).thenReturn(Optional.empty());
 
 		assertThrows(GameException.class, () -> {
 			storyService.saveStory(story, id);

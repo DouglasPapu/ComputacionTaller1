@@ -158,7 +158,7 @@ class GameTest {
 		long id = 2;
 		TsscGame game = new TsscGame();
 
-		when(topicRepository.findById(id)).thenReturn(null);
+		when(topicRepository.findById(id)).thenReturn(Optional.empty());
 
 		assertThrows(TopicException.class, () -> {
 			gameService.saveGameWithTopic(game, id);

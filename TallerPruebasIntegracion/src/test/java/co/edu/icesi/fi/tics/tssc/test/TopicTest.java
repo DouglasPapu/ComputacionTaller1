@@ -180,7 +180,7 @@ class TopicTest {
 		topic2.setDefaultGroups(5);
 		topic2.setDefaultSprints(10);
 
-		Mockito.when(topicRepository.findById(Mockito.anyLong())).thenReturn(null);
+		Mockito.when(topicRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 		assertThrows(TopicException.class, () -> {
 			topicService.editTopic(topic2);
 		});

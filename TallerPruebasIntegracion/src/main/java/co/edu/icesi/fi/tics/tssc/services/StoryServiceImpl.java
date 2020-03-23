@@ -37,7 +37,7 @@ public class StoryServiceImpl implements StoryService {
 		// TODO Auto-generated method stub
 		if (nuevo == null) {
 			throw new StoryException();
-		} else if (gameRepository.findById(id) == null) {
+		} else if (gameRepository.findById(id).isPresent() == false) {
 			throw new GameException();
 
 		} else if (nuevo.getBusinessValue().compareTo(new BigDecimal(0)) == 0
