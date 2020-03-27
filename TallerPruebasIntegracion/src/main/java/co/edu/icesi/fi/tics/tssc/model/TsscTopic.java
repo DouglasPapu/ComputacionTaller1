@@ -44,6 +44,10 @@ public class TsscTopic implements Serializable {
 	@OneToMany(mappedBy = "tsscTopic")
 	@JsonIgnore
 	private List<TsscStory> tsscStories;
+	
+	@OneToMany
+	@JoinColumn(name = "TSSC_TIMECONTROL_ID")
+	private List<TsscTimecontrol> tsscTimecontrol;
 
 	public TsscTopic() {
 	}
@@ -102,6 +106,14 @@ public class TsscTopic implements Serializable {
 
 	public void setTsscStories(List<TsscStory> tsscStories) {
 		this.tsscStories = tsscStories;
+	}
+	
+	public List<TsscTimecontrol> getTssTimecontrol() {
+		return this.tsscTimecontrol;
+	}
+
+	public void setTsscTimecontrol(List<TsscTimecontrol> tsscTimecontrol) {
+		this.tsscTimecontrol = tsscTimecontrol;
 	}
 
 	public TsscStory addTsscStory(TsscStory tsscStory) {

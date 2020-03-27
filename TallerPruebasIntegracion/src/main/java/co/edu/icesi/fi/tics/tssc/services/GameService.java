@@ -14,5 +14,5 @@ public interface GameService {
 	public TsscGame editGame(TsscGame editado) throws GameException, CapacityException, SpringException;
 	
 	//Refactor
-	public TsscGame saveGameWithTopic2(TsscGame nuevo, long id) throws Exception;
+	public TsscGame saveGameWithTopic2(TsscTopic game) throws Exception;
 }

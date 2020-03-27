@@ -13,6 +13,7 @@ import co.edu.icesi.fi.tics.tssc.exceptions.SpringException;
 import co.edu.icesi.fi.tics.tssc.exceptions.TopicException;
 import co.edu.icesi.fi.tics.tssc.model.TsscGame;
 import co.edu.icesi.fi.tics.tssc.model.TsscStory;
+import co.edu.icesi.fi.tics.tssc.model.TsscTimecontrol;
 import co.edu.icesi.fi.tics.tssc.model.TsscTopic;
 import co.edu.icesi.fi.tics.tssc.repositories.IGameRepository;
 import co.edu.icesi.fi.tics.tssc.repositories.ITopicRepository;
@@ -84,29 +85,38 @@ public class GameServiceImpl implements GameService {
 	// Punto d. Refactor
 
 	@Override
-	public TsscGame saveGameWithTopic2(TsscGame nuevo, long id)
+	public TsscGame saveGameWithTopic2(TsscTopic nuevo)
 			throws CapacityException, TopicException, SpringException, GameException {
 
 		if (nuevo == null) {
-			throw new GameException();
-		} else if (topicRepository.findById(id) == null) {
 			throw new TopicException();
-		} else if (nuevo.getNGroups() <= 0) {
+		} else if (nuevo.getDefaultGroups() <= 0) {
 			throw new CapacityException();
-		} else if (nuevo.getNSprints() <= 0) {
+		} else if (nuevo.getDefaultSprints() <= 0) {
 			throw new SpringException();
 		} else {
 			
-			nuevo.setTsscTopic(topicRepository.findById(id).get());
-			TsscTopic topicAssociated = nuevo.getTsscTopic();
+			//Crear juego
 			
-			List<TsscStory> listStories = topicAssociated.getTsscStories();
-			nuevo.setTsscStories(listStories);
+			TsscGame game = new TsscGame();
 			
-			//Ahora el cronograma asociado.
+			//Asociar los groups y sprints al juego.
+			
+			game.setNGroups((int)nuevo.getDefaultGroups());
+			game.setNSprints((int)nuevo.getDefaultSprints());
+			
+			//Copia de historias y cronogramas.
+			
+			List<TsscStory> listStories = nuevo.getTsscStories();
+			List<TsscTimecontrol> listTimecontrol = nuevo.getTssTimecontrol();
+			
+			//Asociar las copias de historias y cronogramas al juego.
+			
+			game.setTsscStories(listStories);
+			game.setTsscTimecontrol(listTimecontrol);
 			
 			
-			return gameRepository.save(nuevo);
+			return gameRepository.save(game);
 		}
 
 	}

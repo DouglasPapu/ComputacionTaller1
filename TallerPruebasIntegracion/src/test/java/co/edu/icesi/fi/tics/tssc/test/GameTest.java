@@ -1,5 +1,6 @@
 package co.edu.icesi.fi.tics.tssc.test;
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,7 +44,6 @@ class GameTest {
 	@BeforeEach
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);
-
 	}
 
 	// *********************************************
@@ -184,6 +184,141 @@ class GameTest {
 			// TODO Auto-generated catch block
 			fail();
 		}
+	}
+
+	// ********************************************
+	// PRUEBAS PARA EL PUNTO D.
+	// ********************************************
+
+	// VALIDAR LAS EXCEPCIONES.
+
+	// Se encarga de verificar si lanza la excepcion al tener un topic null.
+	@DisplayName("Punto D: Topic null")
+	@Test
+	public void testTopicNulo() {
+
+		assertThrows(TopicException.class, () -> {
+			gameService.saveGameWithTopic2(null);
+		});
+
+		Mockito.verifyNoInteractions(gameRepository);
+	}
+
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
+	// igual a cero.
+	@DisplayName("Punto D: Topic Sprints Igual A Cero")
+	@Test
+	public void testSprintsExceptionIgualACero2() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(0);
+		topic.setDefaultGroups(5);
+
+		assertThrows(SpringException.class, () -> {
+			gameService.saveGameWithTopic2(topic);
+		});
+
+		Mockito.verifyNoInteractions(gameRepository);
+	}
+
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Sprints
+	// menor a cero.
+	@DisplayName("Punto D: Topic Sprints Menor A Cero")
+	@Test
+	public void testSprintsExceptionMenorACero2() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(-1);
+		topic.setDefaultGroups(5);
+
+		assertThrows(SpringException.class, () -> {
+			gameService.saveGameWithTopic2(topic);
+		});
+
+		Mockito.verifyNoInteractions(gameRepository);
+	}
+
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Groups
+	// igual a cero.
+	@DisplayName("Punto D: Topic Groups Igual A Cero")
+	@Test
+	public void testGroupsExceptionIgualACero2() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(1);
+		topic.setDefaultGroups(0);
+
+		assertThrows(CapacityException.class, () -> {
+			gameService.saveGameWithTopic2(topic);
+		});
+
+		Mockito.verifyNoInteractions(gameRepository);
+	}
+
+	// Se encarga de verificar si lanza la excepcion al tener un topic con Groups
+	// menor a cero.
+	@DisplayName("Punto D: Topic Groups Menor A Cero")
+	@Test
+	public void testGroupsExceptionMenorACero2() {
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(1);
+		topic.setDefaultGroups(-1);
+
+		assertThrows(CapacityException.class, () -> {
+			gameService.saveGameWithTopic2(topic);
+		});
+
+		Mockito.verifyNoInteractions(gameRepository);
+	}
+
+	@DisplayName("Punto D: Guardar Game a partir de un Topic")
+	@Test
+	public void testSaveGameMedianteTopic() {
+
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(1);
+		topic.setDefaultGroups(1);
+
+		TsscGame game = new TsscGame();
+		game.setNGroups(1);
+		game.setNSprints(1);
+
+		try {
+
+			Mockito.when(gameRepository.save(Mockito.any())).thenReturn(game);
+			assertTrue(gameService.saveGameWithTopic2(topic).getNGroups() == 1);
+
+		} catch (TopicException | GameException | CapacityException | SpringException e) {
+
+			// TODO Auto-generated catch block
+			fail();
+		}
+		
+		verify(gameRepository, times(1)).save(Mockito.any());
+
+	}
+
+	@DisplayName("Punto D: Guardar Game a partir de un Topic 2")
+	@Test
+	public void testSaveGameMedianteTopic2() {
+
+		TsscTopic topic = new TsscTopic();
+		topic.setDefaultSprints(3);
+		topic.setDefaultGroups(1);
+
+		TsscGame game = new TsscGame();
+		game.setNGroups(1);
+		game.setNSprints(3);
+
+		try {
+			Mockito.when(gameRepository.save(Mockito.any())).thenReturn(game);
+			assertTrue(gameService.saveGameWithTopic2(topic).getNSprints() == 3);
+
+		} catch (TopicException | GameException | CapacityException | SpringException e) {
+
+			// TODO Auto-generated catch block
+			fail();
+		}
+		
+		verify(gameRepository, times(1)).save(Mockito.any());
+
 	}
 
 	// *************************************
