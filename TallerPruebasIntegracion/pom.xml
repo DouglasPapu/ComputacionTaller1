@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.douglas.co</groupId>
-	<artifactId>TallerPruebasIntegracion</artifactId>
+	<artifactId>LopezDouglas-TallerPruebas</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TallerPruebasIntegracion</name>
-	<description>Proyecto de TestNG Spring boot</description>
+	<name>Lopez Douglas</name>
+	<description>Proyecto de Spring boot</description>
 
 	<properties>
 		<java.version>1.8</java.version>
